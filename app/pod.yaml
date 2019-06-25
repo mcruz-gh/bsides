@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: reverse-shell
+spec:
+  containers:
+  - name: reverse-shell
+    image: repository/image:tag #Insert reverse-shell image here
+  restartPolicy: OnFailure

